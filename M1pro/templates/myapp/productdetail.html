@@ -1,0 +1,85 @@
+{% extends 'myapp/Base.html' %}
+{% load static %}
+
+{% block title %}Product Details{% endblock title %}
+
+{% block main-content %}
+<div class="container my-5">
+    <div class="row">
+        <!-- Product Image Section -->
+        <div class="col-lg-6 col-md-12 text-center">
+            <img src="{{ product.product_image.url }}" class="img-fluid rounded shadow-lg" alt="{{ product.title }}" style="max-height: 400px; object-fit: contain;">
+        </div>
+
+        <!-- Product Details Section -->
+        <div class="col-lg-6 col-md-12">
+            <h1 class="display-5 fw-bold text-primary">{{ product.title }}</h1>
+            <!-- Price Section -->
+            <h2 class="text-danger fw-bold">Rs. {{ product.discounted_price }}/-</h2>
+            <p class="text-decoration-line-through text-muted fs-5">Rs. {{ product.selling_price }}/-</p>
+
+            <!-- Product Features -->
+            <div class="mt-4">
+                <h4 class="fw-bold">Features</h4>
+                <ul class="list-unstyled fs-5">
+                    <li><i class="bi bi-check-circle-fill text-success me-2"></i>{{ product.description }}</li>
+                    </ul>
+            </div>
+         <div class="mt-4">
+                <h4 class="fw-bold">Select Size</h4>
+                <form id="size-selection-form" class="mb-3">
+                    <select class="form-select form-select-lg" id="size-selector" name="size" required>
+                        <option value="" disabled selected>Select a size</option>
+                        <option value="S">S - 28</option>
+                        <option value="M">M - 32</option>
+                        <option value="L">L - 36</option>
+                        <option value="XL">XL - 40</option>
+                        <option value="XXL">XXL - 44</option>
+                    </select>
+                </form>
+                <small class="text-muted">Size guide: S means 28, M means 32, etc.</small>
+            </div>
+
+            <!-- Buttons Section -->
+            <div class="mt-4 d-flex align-items-center">
+                <!-- Add to Cart Button -->
+                <form action="/add-to-cart" method="post" class="d-inline me-3">
+                    <input type="hidden" name="prod_id" value="{{ product.id }}">
+                    <button type="submit" class="btn btn-primary btn-lg shadow">Add to Cart</button>
+                </form>
+
+                <!-- Buy Now Button -->
+                <a href="#" class="btn btn-warning btn-lg shadow me-3">Buy Now</a>
+
+                <!-- Wishlist Button -->
+                {% if wishlist %}
+                <a pid="{{ product.id }}" class="btn btn-danger btn-lg shadow ms-3">
+                    <i class="fas fa-heart"></i> Remove from Wishlist
+                </a>
+                {% else %}
+                <a pid="{{ product.id }}" class="btn btn-outline-success btn-lg shadow ms-3">
+                    <i class="fas fa-heart"></i> Add to Wishlist
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Suggested Products Section -->
+    <div class="row mt-5">
+        <h3 class="fw-bold mb-4 text-center">You May Also Like</h3>
+        {% for similar_product in similar_products %}
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card shadow-sm">
+                <img src="{{ similar_product.product_image.url }}" class="card-img-top" alt="{{ similar_product.title }}" style="max-height: 200px; object-fit: contain;">
+                <div class="card-body text-center">
+                    <h6 class="card-title fw-bold">{{ similar_product.title }}</h6>
+                    <p class="text-danger fw-bold">Rs. {{ similar_product.discounted_price }}/-</p>
+                    <a href="{% url 'productdetail' similar_product.id %}" class="btn btn-outline-primary btn-sm">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock main-content %}
